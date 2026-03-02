@@ -3,36 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>kenn.home</title>
+    <title>home</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
 <div id="topbar">
-  <a href="home.html" id="topbar-title">KENN.NET</a>
+  <span id="topbar-title">KENN.NET</span>
   <div id="topbar-controls">
     <button class="topbar-btn" id="btn-palette" title="Cycle theme">T</button>
     <button class="topbar-btn" id="btn-zen"     title="Zen mode">Z</button>
     <button class="topbar-btn" id="btn-font"     title="Cycle font">F</button>
   </div>
-</div> 
-
-  <textarea id="md" style="display:none;"> 
-
-# KENN.NET
-
-## About
-
-This is a personal site ran exclusively by Kenneth Devine. It was made to practice web development and keep my cool stuff in one place. It uses the same theme I use in my Obsidian Vault.
-
-  </textarea>
+</div>
 
   <div id="content"></div>
-
-  <a href="fiction.html">Fiction</a>
-    <br>
-  <a href="bio.html">About Me</a>
 
 <script>
   // --- THEME CYCLING ---
@@ -42,7 +28,7 @@ This is a personal site ran exclusively by Kenneth Devine. It was made to practi
     for (let i = 0; i < themes.length; i++) {
       if (document.body.classList.contains(themes[i])) return i;
     }
-    return -1; // using :root default
+    return -1;
   }
 
   function setTheme(index) {
@@ -56,20 +42,19 @@ This is a personal site ran exclusively by Kenneth Devine. It was made to practi
     setTheme(next);
   });
 
-  // Restore saved theme on load
   const savedTheme = localStorage.getItem('theme');
   if (savedTheme && themes.includes(savedTheme)) {
     document.body.classList.add(savedTheme);
   }
 
-  // --- FONT CYCLING
+  // --- FONT CYCLING ---
   const fonts = ['font-jetbrains', 'font-georgia'];
 
   function getCurrentFontIndex() {
     for (let i = 0; i < fonts.length; i++) {
       if (document.body.classList.contains(fonts[i])) return i;
     }
-    return -1; // using :root default
+    return -1;
   }
 
   function setFont(index) {
@@ -83,7 +68,6 @@ This is a personal site ran exclusively by Kenneth Devine. It was made to practi
     setFont(next);
   });
 
-  // Restore saved font on load
   const savedFont = localStorage.getItem('font');
   if (savedFont && fonts.includes(savedFont)) {
     document.body.classList.add(savedFont);
@@ -103,7 +87,6 @@ This is a personal site ran exclusively by Kenneth Devine. It was made to practi
     }
   });
 
-  // While in zen mode, peek when mouse approaches top 10px of screen
   document.addEventListener('mousemove', (e) => {
     if (!zenActive) return;
     if (e.clientY <= 50) {
@@ -114,14 +97,44 @@ This is a personal site ran exclusively by Kenneth Devine. It was made to practi
   });
 </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script>
-    marked.use({ breaks: true });
-    const md = document.getElementById('md').value;
-    document.getElementById('content').innerHTML = marked.parse(md);
-  </script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  // ---- CHANGE THIS to match the .md file for this page ----
+  const MD_FILE = 'home.md';
+  // ---------------------------------------------------------
+
+  // Custom renderer: smart link handling
+  const renderer = new marked.Renderer();
+  renderer.link = function(href, title, text) {
+    const isExternal = href.startsWith('http://') || href.startsWith('https://') || href.startsWith('//');
+    const finalHref = isExternal ? href : `${href}.html`;
+    const targetAttr = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
+    const titleAttr = title ? ` title="${title}"` : '';
+    return `<a href="${finalHref}"${targetAttr}${titleAttr}>${text}</a>`;
+  };
+
+  marked.use({ renderer, breaks: true });
+
+  // Fetch and render the .md file
+  fetch(MD_FILE)
+    .then(res => {
+      if (!res.ok) throw new Error(`Could not load ${MD_FILE} (${res.status})`);
+      return res.text();
+    })
+    .then(md => {
+      // Strip optional frontmatter (--- blocks at top)
+      const stripped = md.replace(/^---[\s\S]*?---\s*/m, '');
+      document.getElementById('content').innerHTML = marked.parse(stripped);
+
+      // Set page title from first H1 if present
+      const h1 = document.querySelector('#content h1');
+      if (h1) document.title = `kenn.${h1.textContent.toLowerCase()}`;
+    })
+    .catch(err => {
+      document.getElementById('content').innerHTML =
+        `<p style="color:red;">Error: ${err.message}</p>`;
+    });
+</script>
 
 </body>
-
 </html>
-

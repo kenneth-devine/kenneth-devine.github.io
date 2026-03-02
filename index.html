@@ -100,10 +100,16 @@
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
   // ---- CHANGE THIS to match the .md file for this page ----
-  const MD_FILE = '/markdown/home.md';
+  const MD_FILE = '/markdown/home.md'; 
   // ---------------------------------------------------------
 
   // Custom renderer: smart link handling
+  const ROOT = '/'; // or '/your-repo-name/' if on GitHub Pages in a subdirectory
+  renderer.link = function(href, title, text) {
+  const isExternal = href.startsWith('http://') || href.startsWith('https://') || href.startsWith('//');
+  const finalHref = isExternal ? href : `${ROOT}${href}.html`;
+  ...
+  };
   const renderer = new marked.Renderer();
   renderer.link = function(href, title, text) {
     const isExternal = href.startsWith('http://') || href.startsWith('https://') || href.startsWith('//');
@@ -112,6 +118,7 @@
     const titleAttr = title ? ` title="${title}"` : '';
     return `<a href="${finalHref}"${targetAttr}${titleAttr}>${text}</a>`;
   };
+    
 
   marked.use({ renderer, breaks: true });
 
@@ -138,5 +145,6 @@
 
 </body>
 </html>
+
 
 

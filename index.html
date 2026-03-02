@@ -107,13 +107,16 @@
 
   // Custom renderer: smart link handling
   const renderer = new marked.Renderer();
-  renderer.link = function(href, title, text) {
-    const isExternal = href.startsWith('http://') || href.startsWith('https://') || href.startsWith('//');
-    const finalHref = isExternal ? href : `${ROOT}/${href}.html`;
-    const targetAttr = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
-    const titleAttr = title ? ` title="${title}"` : '';
-    return `<a href="${finalHref}"${targetAttr}${titleAttr}>${text}</a>`;
-  };
+  renderer.link = function(token) {
+  const href = token.href;
+  const title = token.title;
+  const text = token.text;
+  const isExternal = href.startsWith('http://') || href.startsWith('https://') || href.startsWith('//');
+  const finalHref = isExternal ? href : `${ROOT}/${href}.html`;
+  const targetAttr = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
+  const titleAttr = title ? ` title="${title}"` : '';
+  return `<a href="${finalHref}"${targetAttr}${titleAttr}>${text}</a>`;
+};
 
   marked.use({ renderer, breaks: true });
 
@@ -140,6 +143,7 @@
 
 </body>
 </html>
+
 
 
 

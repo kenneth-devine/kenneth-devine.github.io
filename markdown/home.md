@@ -5,3 +5,5 @@ This is a personal site ran exclusively by Kenneth Devine. It was made to practi
 [Fiction](fiction)
 
 [About Me](bio)
+
+[Site Architecture](Architecture)

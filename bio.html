@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kenn.bio</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div id="topbar">
+  <a href="home.html" id="topbar-title">KENN.NET</a>
+  <div id="topbar-controls">
+    <button class="topbar-btn" id="btn-palette" title="Cycle theme">T</button>
+    <button class="topbar-btn" id="btn-zen"     title="Zen mode">Z</button>
+    <button class="topbar-btn" id="btn-font"     title="Cycle font">F</button>
+  </div>
+</div> 
+
+  <textarea id="md" style="display:none;"> 
+
+# ABOUT ME
+
+## Overview
+
+    I was born May 25, 2007, 11:11 PM, in Shaboygan, WI, to Carmen and Devon Devine. Fun fact: that's the 30th anniversary of Star Wars A New Hope.
+
+## Early Life 
+
+## Now
+
+## Interests
+
+  </textarea>
+
+  <div id="content"></div>
+
+<script>
+  // --- THEME CYCLING ---
+  const themes = ['theme-midnight', 'theme-dusk', 'theme-cafe', 'theme-sunny'];
+
+  function getCurrentThemeIndex() {
+    for (let i = 0; i < themes.length; i++) {
+      if (document.body.classList.contains(themes[i])) return i;
+    }
+    return -1; // using :root default
+  }
+
+  function setTheme(index) {
+    themes.forEach(t => document.body.classList.remove(t));
+    document.body.classList.add(themes[index]);
+    localStorage.setItem('theme', themes[index]);
+  }
+
+  document.getElementById('btn-palette').addEventListener('click', () => {
+    const next = (getCurrentThemeIndex() + 1) % themes.length;
+    setTheme(next);
+  });
+
+  // Restore saved theme on load
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme && themes.includes(savedTheme)) {
+    document.body.classList.add(savedTheme);
+  }
+
+  // --- FONT CYCLING
+  const fonts = ['font-jetbrains', 'font-georgia'];
+
+  function getCurrentFontIndex() {
+    for (let i = 0; i < fonts.length; i++) {
+      if (document.body.classList.contains(fonts[i])) return i;
+    }
+    return -1; // using :root default
+  }
+
+  function setFont(index) {
+    fonts.forEach(t => document.body.classList.remove(t));
+    document.body.classList.add(fonts[index]);
+    localStorage.setItem('font', fonts[index]);
+  }
+
+  document.getElementById('btn-font').addEventListener('click', () => {
+    const next = (getCurrentFontIndex() + 1) % fonts.length;
+    setFont(next);
+  });
+
+  // Restore saved font on load
+  const savedFont = localStorage.getItem('font');
+  if (savedFont && fonts.includes(savedFont)) {
+    document.body.classList.add(savedFont);
+  }
+
+  // --- ZEN MODE ---
+  let zenActive = false;
+  const topbar = document.getElementById('topbar');
+
+  document.getElementById('btn-zen').addEventListener('click', () => {
+    zenActive = !zenActive;
+    if (zenActive) {
+      topbar.classList.add('zen-hidden');
+    } else {
+      topbar.classList.remove('zen-hidden');
+      topbar.classList.remove('zen-peek');
+    }
+  });
+
+  // While in zen mode, peek when mouse approaches top 10px of screen
+  document.addEventListener('mousemove', (e) => {
+    if (!zenActive) return;
+    if (e.clientY <= 50) {
+      topbar.classList.add('zen-peek');
+    } else {
+      topbar.classList.remove('zen-peek');
+    }
+  });
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    marked.use({ breaks: true });
+    const md = document.getElementById('md').value;
+    document.getElementById('content').innerHTML = marked.parse(md);
+  </script>
+
+</body>
+
+</html>

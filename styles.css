@@ -52,6 +52,14 @@ body.theme-sunny {
   --border: #dddddd;
 }
 
+body.theme-desert {
+  --bg: #f1a56f;
+  --text: #111111;
+  --accent: #ff5e00;
+  --bg-secondary: #e4a476;
+  --border: #000000;
+}
+
 
 /* =========================================
    TOPBAR
@@ -185,4 +193,5 @@ blockquote {
   margin-left: 0;
   padding-left: 1em;
   color: var(--text);
+
 }

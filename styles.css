@@ -55,7 +55,7 @@ body.theme-sunny {
 body.theme-desert {
   --bg: #f1a56f;
   --text: #111111;
-  --accent: #ff5e00;
+  --accent: #00ff11;
   --bg-secondary: #e4a476;
   --border: #000000;
 }
@@ -195,3 +195,4 @@ blockquote {
   color: var(--text);
 
 }
+

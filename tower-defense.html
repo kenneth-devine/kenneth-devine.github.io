@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kenn.tower-defense</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div id="topbar">
+  <span id="topbar-title">KENN.NET</span>
+  <div id="topbar-controls">
+    <button class="topbar-btn" id="btn-palette" title="Cycle theme">T</button>
+    <button class="topbar-btn" id="btn-zen"     title="Zen mode">Z</button>
+    <button class="topbar-btn" id="btn-font"     title="Cycle font">F</button>
+  </div>
+</div>
+
+  <div id="content"></div>
+
+<script>
+  // --- THEME CYCLING ---
+  const themes = ['theme-midnight', 'theme-dusk', 'theme-cafe', 'theme-sunny'];
+
+  function getCurrentThemeIndex() {
+    for (let i = 0; i < themes.length; i++) {
+      if (document.body.classList.contains(themes[i])) return i;
+    }
+    return -1;
+  }
+
+  function setTheme(index) {
+    themes.forEach(t => document.body.classList.remove(t));
+    document.body.classList.add(themes[index]);
+    localStorage.setItem('theme', themes[index]);
+  }
+
+  document.getElementById('btn-palette').addEventListener('click', () => {
+    const next = (getCurrentThemeIndex() + 1) % themes.length;
+    setTheme(next);
+  });
+
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme && themes.includes(savedTheme)) {
+    document.body.classList.add(savedTheme);
+  }
+
+  // --- FONT CYCLING ---
+  const fonts = ['font-jetbrains', 'font-georgia'];
+
+  function getCurrentFontIndex() {
+    for (let i = 0; i < fonts.length; i++) {
+      if (document.body.classList.contains(fonts[i])) return i;
+    }
+    return -1;
+  }
+
+  function setFont(index) {
+    fonts.forEach(t => document.body.classList.remove(t));
+    document.body.classList.add(fonts[index]);
+    localStorage.setItem('font', fonts[index]);
+  }
+
+  document.getElementById('btn-font').addEventListener('click', () => {
+    const next = (getCurrentFontIndex() + 1) % fonts.length;
+    setFont(next);
+  });
+
+  const savedFont = localStorage.getItem('font');
+  if (savedFont && fonts.includes(savedFont)) {
+    document.body.classList.add(savedFont);
+  }
+
+  // --- ZEN MODE ---
+  let zenActive = false;
+  const topbar = document.getElementById('topbar');
+
+  document.getElementById('btn-zen').addEventListener('click', () => {
+    zenActive = !zenActive;
+    if (zenActive) {
+      topbar.classList.add('zen-hidden');
+    } else {
+      topbar.classList.remove('zen-hidden');
+      topbar.classList.remove('zen-peek');
+    }
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!zenActive) return;
+    if (e.clientY <= 50) {
+      topbar.classList.add('zen-peek');
+    } else {
+      topbar.classList.remove('zen-peek');
+    }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  const MD_FILE = 'markdown/tower-defense.md';
+  const ROOT = '';
+
+  const renderer = new marked.Renderer();
+  renderer.link = function(token) {
+    const href = token.href;
+    const title = token.title;
+    const text = token.text;
+    const isExternal = href.startsWith('http://') || href.startsWith('https://') || href.startsWith('//');
+    const finalHref = isExternal ? href : `${ROOT}/${href}.html`;
+    const targetAttr = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
+    const titleAttr = title ? ` title="${title}"` : '';
+    return `<a href="${finalHref}"${targetAttr}${titleAttr}>${text}</a>`;
+  };
+
+  marked.use({ renderer, breaks: true });
+
+  fetch(MD_FILE)
+    .then(res => {
+      if (!res.ok) throw new Error(`Could not load ${MD_FILE} (${res.status})`);
+      return res.text();
+    })
+    .then(md => {
+      const stripped = md.replace(/^---[\s\S]*?---\s*/m, '');
+      document.getElementById('content').innerHTML = marked.parse(stripped);
+      const h1 = document.querySelector('#content h1');
+      if (h1) document.title = `kenn.${h1.textContent.toLowerCase()}`;
+    })
+    .catch(err => {
+      document.getElementById('content').innerHTML =
+        `<p style="color:red;">Error: ${err.message}</p>`;
+    });
+</script>
+
+</body>
+</html>

@@ -20,9 +20,33 @@
 
   <div id="content"></div>
 
-  <div>
-      <a>PYTHON CODE GOES HERE</a>
-  </div>
+  <div id="python-tool" style="padding: 20px; border: 1px solid #444; margin: 20px; border-radius: 8px;">
+    <h3>Binary Decoder</h3>
+    <input type="text" id="binary-input" placeholder="e.g. 1 1 0 1" style="padding: 5px; color: black;">
+    <button id="convert-btn" py-click="convert_logic" style="padding: 5px 15px; cursor: pointer;">Convert</button>
+    <p id="output-area">Output: Waiting for input...</p>
+</div>
+
+<script type="py">
+from pyscript import document
+
+def convert_logic(event):
+    # Get the value from the HTML input
+    input_text = document.querySelector("#binary-input").value
+    
+    try:
+        # Your logic: Map, Split, Shift
+        bits = map(int, input_text.split())
+        total = 0
+        for bit in bits:
+            total = (total << 1) | bit
+        
+        # Output back to the HTML
+        document.querySelector("#output-area").innerText = f"Decimal Result: {total}"
+    except Exception as e:
+        document.querySelector("#output-area").innerText = "Error: Please use spaced numbers (0 1)"
+
+</script>
 
 <script>
   // --- THEME CYCLING ---

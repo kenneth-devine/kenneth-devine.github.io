@@ -133,7 +133,7 @@
 
       // Set page title from first H1 if present
       const h1 = document.querySelector('#content h1');
-      if (h1) document.title = `kenn.${h1.textContent.toLowerCase()}`;
+      if (h1) document.title = `${h1.textContent.toLowerCase()}`;
     })
     .catch(err => {
       document.getElementById('content').innerHTML =
@@ -143,6 +143,7 @@
 
 </body>
 </html>
+
 
 
 

@@ -4,8 +4,7 @@ This is a personal site ran exclusively by Kenneth Devine. It was made to practi
 
 [Writing](writing)  
 [Code](code)  
-[Art](art)  
 [Design](design)  
-[Bookmarks](bookmarks)  
+[Cool Stuff](bookmarks)  
 
 [About Me](bio)  

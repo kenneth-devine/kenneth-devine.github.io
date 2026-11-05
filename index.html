@@ -1,169 +1,287 @@
 <!DOCTYPE html>
 <html lang="en">
-    <style>
-         mycontainer div {
-            width: 50%;
-            float: left;
-        }
-    </style>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>index</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KenCorp Digital Products</title>
+  <meta name="description" content="KenCorp Digital Products makes software that's actually worth using. Currently building an improved dashboard for Canvas.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3CradialGradient id='g' cx='.35' cy='.3' r='.8'%3E%3Cstop offset='0' stop-color='%23ffe08a'/%3E%3Cstop offset='.55' stop-color='%23ff9a1a'/%3E%3Cstop offset='1' stop-color='%23d94e00'/%3E%3C/radialGradient%3E%3C/defs%3E%3Ccircle cx='16' cy='16' r='14' fill='url(%23g)'/%3E%3Cellipse cx='12' cy='9' rx='7' ry='4' fill='%23fff' opacity='.6'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #3a2310;
+      --ink-soft: #6b4a2e;
+      --orange: #ff7a00;
+      --orange-deep: #d94e00;
+      --amber: #ffb300;
+      --glass: rgba(255, 255, 255, 0.52);
+      --font: "Open Sans", "Segoe UI", "Frutiger", "Lucida Grande", "Trebuchet MS", Verdana, sans-serif;
+    }
 
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; min-height: 100%; }
+
+    body {
+      min-height: 100vh;
+      min-height: 100svh;
+      font-family: var(--font);
+      color: var(--ink);
+      background: #fff url("img/background.jpg") center / cover no-repeat fixed;
+      position: relative;
+      overflow-x: hidden;
+      display: flex;
+      align-items: flex-start;
+      padding: clamp(24px, 9vh, 110px) 16px 48px clamp(16px, 9vw, 180px);
+    }
+
+    /* ---------- the window ---------- */
+    .window {
+      position: relative;
+      z-index: 2;
+      width: min(100%, 580px);
+      border-radius: 16px;
+      background: var(--glass);
+      -webkit-backdrop-filter: blur(16px) saturate(1.5);
+      backdrop-filter: blur(16px) saturate(1.5);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow:
+        0 0 0 1px rgba(214, 100, 10, 0.38),
+        0 22px 48px -12px rgba(217, 78, 0, 0.45),
+        0 3px 8px rgba(120, 50, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        inset 0 0 30px rgba(255, 255, 255, 0.35);
+      overflow: hidden;
+    }
+
+    /* the big glossy sheen across the top half */
+    .window::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 46%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .titlebar {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: #5a2c05;
+      text-shadow: 0 0 8px #fff, 0 0 3px #fff;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 214, 150, 0.35));
+      border-bottom: 1px solid rgba(214, 100, 10, 0.3);
+    }
+
+    .titlebar .dot { width: 16px; height: 16px; flex: none; }
+
+    .winbtns { margin-left: auto; display: flex; gap: 0; border-radius: 0 0 8px 8px; overflow: hidden; margin-top: -9px; margin-bottom: -9px; margin-right: -3px;
+      box-shadow: 0 0 0 1px rgba(160, 70, 0, 0.4), 0 2px 4px rgba(120, 50, 0, 0.25); }
+    .winbtns span {
+      width: 30px; height: 20px;
+      background: linear-gradient(180deg, #fff6e4 0%, #ffe2ae 48%, #ffc766 52%, #ffd994 100%);
+      border-right: 1px solid rgba(160, 70, 0, 0.35);
+      position: relative;
+    }
+    .winbtns span:last-child {
+      width: 44px; border-right: 0;
+      background: linear-gradient(180deg, #ffb48a 0%, #ff7a3d 48%, #e1420a 52%, #ff7a3d 100%);
+    }
+    .winbtns span::after { content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+    .winbtns .min::after { width: 9px; height: 3px; background: #7a3a08; margin-top: 3px; border-radius: 1px; }
+    .winbtns .max::after { width: 9px; height: 8px; border: 2px solid #7a3a08; border-top-width: 3px; border-radius: 1px; }
+    .winbtns .close::after { content: "\00d7"; color: #fff; font: 700 16px/1 var(--font); text-shadow: 0 0 2px #7a1c00, 0 1px 1px #7a1c00; margin-top: -1px; }
+
+    .content { position: relative; z-index: 1; padding: 30px 30px 26px; }
+
+    h1 {
+      margin: 0 0 14px;
+      line-height: 0.95;
+      font-weight: 800;
+      font-size: clamp(2.6rem, 9vw, 4rem);
+      letter-spacing: -0.035em;
+    }
+    h1 .ken {
+      display: block;
+      background: linear-gradient(180deg, #ffb21f 0%, #ff7a00 52%, #d94e00 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 2px 0 rgba(255, 255, 255, 0.9)) drop-shadow(0 4px 6px rgba(217, 78, 0, 0.3));
+    }
+    h1 .rest {
+      display: block;
+      margin-top: 6px;
+      font-weight: 300;
+      font-size: 0.5em;
+      letter-spacing: 0;
+      color: var(--ink);
+      text-shadow: 0 1px 0 #fff, 0 0 12px rgba(255, 255, 255, 0.9);
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 34em;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--ink-soft);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    /* glossy divider */
+    hr {
+      height: 3px;
+      margin: 24px 0;
+      border: 0;
+      border-radius: 3px;
+      background: linear-gradient(90deg, rgba(255, 122, 0, 0), rgba(255, 122, 0, 0.7) 20%, rgba(255, 179, 0, 0.8) 55%, rgba(255, 122, 0, 0));
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    /* ---------- bio ---------- */
+    .bio {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      padding: 16px 18px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 244, 226, 0.55));
+      box-shadow:
+        0 0 0 1px rgba(214, 100, 10, 0.25),
+        0 1px 0 #fff,
+        inset 0 2px 5px rgba(217, 100, 10, 0.12);
+    }
+    .bio p { margin: 0; font-size: 0.97rem; line-height: 1.6; }
+
+    .orb {
+      flex: none;
+      width: 58px; height: 58px;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      position: relative;
+      font-weight: 800; font-size: 26px;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(150, 40, 0, 0.7);
+      background: radial-gradient(circle at 50% 120%, #ffe58a 0%, #ffa21a 38%, #e05200 85%);
+      box-shadow:
+        0 0 0 1px rgba(170, 60, 0, 0.7),
+        0 5px 10px rgba(217, 78, 0, 0.4),
+        inset 0 -4px 8px rgba(255, 220, 120, 0.6);
+    }
+    .orb::before {
+      content: "";
+      position: absolute; top: 3px; left: 8px; right: 8px; height: 46%;
+      border-radius: 50% / 70% 70% 40% 40%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.1));
+    }
+    .orb span { position: relative; }
+
+    .statusbar {
+      position: relative; z-index: 1;
+      padding: 7px 16px;
+      font-size: 11.5px;
+      color: #7a5230;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 226, 180, 0.5));
+      border-top: 1px solid rgba(214, 100, 10, 0.25);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    /* ---------- floating bubbles ---------- */
+    .bubble {
+      position: fixed;
+      z-index: 1;
+      border-radius: 50%;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.95) 0 9%, rgba(255, 255, 255, 0) 30%),
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08) 55%, rgba(255, 140, 20, 0.28) 100%);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.75),
+        inset 0 -6px 12px rgba(255, 190, 80, 0.45),
+        0 6px 16px rgba(217, 78, 0, 0.18);
+      animation: drift 9s ease-in-out infinite alternate;
+    }
+    .b1 { width: 120px; height: 120px; right: 9vw; top: 9vh; }
+    .b2 { width: 54px;  height: 54px;  right: 24vw; top: 30vh; animation-duration: 7s; animation-delay: -3s; }
+    .b3 { width: 190px; height: 190px; right: 6vw; bottom: 8vh; animation-duration: 12s; animation-delay: -5s; }
+    .b4 { width: 34px;  height: 34px;  left: 4vw; bottom: 14vh; animation-duration: 8s; animation-delay: -2s; }
+    .b5 { width: 76px;  height: 76px;  right: 34vw; bottom: 18vh; animation-duration: 10s; animation-delay: -6s; }
+
+    @keyframes drift {
+      from { transform: translate(0, 0); }
+      to   { transform: translate(8px, -22px); }
+    }
+
+    /* ---------- small screens ---------- */
+    @media (max-width: 640px) {
+      body { padding-top: 24px; }
+      .content { padding: 22px 18px 20px; }
+      .bio { padding: 14px; gap: 14px; }
+      .orb { width: 48px; height: 48px; font-size: 22px; }
+      .b1 { right: -30px; top: auto; bottom: 6vh; }
+      .b2, .b5 { display: none; }
+      .b3 { right: -60px; bottom: 28vh; width: 150px; height: 150px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bubble { animation: none; }
+    }
+
+    /* browsers without backdrop-filter get a more solid pane */
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .window { background: rgba(255, 252, 247, 0.9); }
+    }
+  </style>
+</head>
 <body>
 
-<div id="topbar">
-  <span id="topbar-title">KENN.NET</span>
-  <div id="topbar-controls">
-    <button class="topbar-btn" id="btn-palette" title="Cycle theme">T</button>
-    <button class="topbar-btn" id="btn-zen"     title="Zen mode">Z</button>
-    <button class="topbar-btn" id="btn-font"     title="Cycle font">F</button>
-  </div>
-</div>
+  <i class="bubble b1"></i>
+  <i class="bubble b2"></i>
+  <i class="bubble b3"></i>
+  <i class="bubble b4"></i>
+  <i class="bubble b5"></i>
 
-  <div id="content" style="width: 50%;"></div>
+  <main class="window">
+    <div class="titlebar">
+      <svg class="dot" viewBox="0 0 32 32" aria-hidden="true">
+        <defs>
+          <radialGradient id="tb" cx=".35" cy=".3" r=".8">
+            <stop offset="0" stop-color="#ffe08a"/>
+            <stop offset=".55" stop-color="#ff9a1a"/>
+            <stop offset="1" stop-color="#d94e00"/>
+          </radialGradient>
+        </defs>
+        <circle cx="16" cy="16" r="14" fill="url(#tb)"/>
+        <ellipse cx="12" cy="9" rx="7" ry="4" fill="#fff" opacity=".65"/>
+      </svg>
+      <span>index.html</span>
+      <div class="winbtns" aria-hidden="true"><span class="min"></span><span class="max"></span><span class="close"></span></div>
+    </div>
 
-  <div style="background-color:#FFC0C7;" >
-  <h2>Oslo</h2>
-  <p>Oslo is the capital city of Norway.</p>
-  <p>Oslo has over 700,000 inhabitants.</p>
-  </div>
+    <div class="content">
+      <h1><span class="ken">KenCorp</span><span class="rest">Digital Products</span></h1>
+      <p class="lead">KenCorp exists to make software that's actually worth using: clear, practical, and built to solve a real problem.</p>
 
-<script>
-  // --- THEME CYCLING ---
-  const themes = ['theme-midnight', 'theme-dusk', 'theme-cafe', 'theme-sunny', 'theme-desert'];
+      <hr>
 
-  function getCurrentThemeIndex() {
-    for (let i = 0; i < themes.length; i++) {
-      if (document.body.classList.contains(themes[i])) return i;
-    }
-    return -1;
-  }
+      <section class="bio" aria-label="About Kenneth">
+        <div class="orb" aria-hidden="true"><span>K</span></div>
+        <p>Hey, I'm Kenneth. I'm a second year math student and developer. I make digital products that actually provide value. My current project is an improved dashboard for Canvas.</p>
+      </section>
+    </div>
 
-  function setTheme(index) {
-    themes.forEach(t => document.body.classList.remove(t));
-    document.body.classList.add(themes[index]);
-    localStorage.setItem('theme', themes[index]);
-  }
-
-  document.getElementById('btn-palette').addEventListener('click', () => {
-    const next = (getCurrentThemeIndex() + 1) % themes.length;
-    setTheme(next);
-  });
-
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme && themes.includes(savedTheme)) {
-    document.body.classList.add(savedTheme);
-  }
-
-  // --- FONT CYCLING ---
-  const fonts = ['font-jetbrains', 'font-georgia'];
-
-  function getCurrentFontIndex() {
-    for (let i = 0; i < fonts.length; i++) {
-      if (document.body.classList.contains(fonts[i])) return i;
-    }
-    return -1;
-  }
-
-  function setFont(index) {
-    fonts.forEach(t => document.body.classList.remove(t));
-    document.body.classList.add(fonts[index]);
-    localStorage.setItem('font', fonts[index]);
-  }
-
-  document.getElementById('btn-font').addEventListener('click', () => {
-    const next = (getCurrentFontIndex() + 1) % fonts.length;
-    setFont(next);
-  });
-
-  const savedFont = localStorage.getItem('font');
-  if (savedFont && fonts.includes(savedFont)) {
-    document.body.classList.add(savedFont);
-  }
-
-  // --- ZEN MODE ---
-  let zenActive = false;
-  const topbar = document.getElementById('topbar');
-
-  document.getElementById('btn-zen').addEventListener('click', () => {
-    zenActive = !zenActive;
-    if (zenActive) {
-      topbar.classList.add('zen-hidden');
-    } else {
-      topbar.classList.remove('zen-hidden');
-      topbar.classList.remove('zen-peek');
-    }
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (!zenActive) return;
-    if (e.clientY <= 50) {
-      topbar.classList.add('zen-peek');
-    } else {
-      topbar.classList.remove('zen-peek');
-    }
-  });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script>
-  // ---- CHANGE THIS to match the .md file for this page ----
-  const MD_FILE = 'markdown/index.md';
-  // ---- CHANGE THIS to your repo name e.g. '/my-repo' or '' for custom domain ----
-  const ROOT = '';
-  // ---------------------------------------------------------
-
-  // Custom renderer: smart link handling
-  const renderer = new marked.Renderer();
-  renderer.link = function(token) {
-  const href = token.href;
-  const title = token.title;
-  const text = token.text;
-  const isExternal = href.startsWith('http://') || href.startsWith('https://') || href.startsWith('//');
-  const finalHref = isExternal ? href : `${ROOT}/${href}.html`;
-  const targetAttr = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
-  const titleAttr = title ? ` title="${title}"` : '';
-  return `<a href="${finalHref}"${targetAttr}${titleAttr}>${text}</a>`;
-};
-
-  marked.use({ renderer, breaks: true });
-
-  // Fetch and render the .md file
-  fetch(MD_FILE)
-    .then(res => {
-      if (!res.ok) throw new Error(`Could not load ${MD_FILE} (${res.status})`);
-      return res.text();
-    })
-    .then(md => {
-      // Strip optional frontmatter (--- blocks at top)
-      const stripped = md.replace(/^---[\s\S]*?---\s*/m, '');
-      document.getElementById('content').innerHTML = marked.parse(stripped);
-
-      // Set page title from first H1 if present
-      const h1 = document.querySelector('#content h1');
-      if (h1) document.title = `${h1.textContent.toLowerCase()}`;
-    })
-    .catch(err => {
-      document.getElementById('content').innerHTML =
-        `<p style="color:red;">Error: ${err.message}</p>`;
-    });
-</script>
+    <div class="statusbar">&copy; 2026 KenCorp Digital Products</div>
+  </main>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
